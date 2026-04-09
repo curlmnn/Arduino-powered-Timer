@@ -1,0 +1,62 @@
+#include <Adafruit_LEDBackpack.h>
+
+Adafruit_7segment display = Adafruit_7segment();
+
+int buzzerPin = 8;
+int upBtn = 2;
+int downBtn = 3;
+int startBtn = 4;
+int seconds = 0;
+bool running = false;
+
+void displayTime(int secs) {
+  int mins = secs / 60;
+  int s = secs % 60;
+  display.clear();
+  display.writeDigitNum(0, mins / 10);
+  display.writeDigitNum(1, mins % 10);
+  display.drawColon(true);
+  display.writeDigitNum(3, s / 10);
+  display.writeDigitNum(4, s % 10);
+  display.writeDisplay();
+}
+
+void setup() {
+  display.begin(0x77);
+  display.clear();
+  display.writeDisplay();
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(upBtn, INPUT_PULLUP);
+  pinMode(downBtn, INPUT_PULLUP);
+  pinMode(startBtn, INPUT_PULLUP);
+}
+
+void loop() {
+  if (!running) {
+    if (digitalRead(upBtn) == LOW) {
+      seconds += 10;
+      displayTime(seconds);
+      delay(200); // debounce
+    }
+    if (digitalRead(downBtn) == LOW) {
+      if (seconds >= 10) seconds -= 10;
+      displayTime(seconds);
+      delay(200);
+    }
+    if (digitalRead(startBtn) == LOW && seconds > 0) {
+      running = true;
+      delay(300);
+    }
+  } else {
+    if (seconds > 0) {
+      displayTime(seconds);
+      delay(1000);
+      seconds--;
+    } else {
+      digitalWrite(buzzerPin, HIGH);
+      delay(2000);
+      digitalWrite(buzzerPin, LOW);
+      running = false; // reset back to input mode
+    }
+  }
+}
