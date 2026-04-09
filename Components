@@ -1,0 +1,5 @@
+Name,Quantity,Component
+"U1"          ,1,       "Arduino Uno R3"
+"U2"          ,1,       "Red, 119 (0x77) 7-Segment Clock Display"
+"PIEZO1"      ,1,       " Piezo"
+"S1, S2, S3"  ,3,       " Pushbutton"
